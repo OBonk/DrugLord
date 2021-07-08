@@ -171,6 +171,8 @@ def Quit_button():
     pygame.font.init()
     smallfont = pygame.font.SysFont('Arial', 30)
     text = smallfont.render('Quit', True, color_white)
+    quit_text = text.get_rect(center=(250,755))
+    screen.blit(text, quit_text)
     #market_dict["london"] = load_pricing("London.csv")
     while True:
         for e in pygame.event.get():
@@ -184,13 +186,16 @@ def Quit_button():
                     sys.exit()
 
         mouse = pygame.mouse.get_pos()
-        if width / 2 <= mouse[0] <= width / 2 + 140 and height / 2 <= mouse[1] <= height / 2 + 40:
+        if 190 <= mouse[0] <= 190 + 120 and 740 <= mouse[1] <= 740 + 30:
             pygame.draw.rect(screen, color_light, [190, 740, 120, 30])
+            screen.blit(text, quit_text)
         else:
             pygame.draw.rect(screen, color_dark, [190, 740, 120, 30])
-        screen.blit(text, (width / 2 + 50, height / 2))
-        pygame.display.update()
+            screen.blit(text, quit_text)
 
+
+        #screen.blit(text, (width / 2 + 50, height / 2))
+        pygame.display.update()
 
 Quit_button()
 
