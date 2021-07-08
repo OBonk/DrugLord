@@ -189,6 +189,40 @@ def Quit_button():
 
 Quit_button()
 
+def Market():
+    # Initialise data to Dicts of series.
+    Standard_Pricing = {'Current Price': pd.Series([1600, 800, 400, 200, 100],
+                                index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"]),
+                        'Min Price': pd.Series([1200, 600, 300, 150, 75],
+                                index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"]),
+                        'Max Price': pd.Series([2000, 1200, 500, 250, 125],
+                                index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"]),
+                        'Detection Per a Unit': pd.Series([1, 0.5, 0.25, 0.125, 0.005],
+                                index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"]),
+                        'Special event increase %': pd.Series([200, 150, 300, 500, 600],
+                                index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"]),
+                        'Special event decrease %': pd.Series([-90, -90, -90, -90, -90],
+                                index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"]),
+                        'Quantity': pd.Series([5, 10, 20, 40, 80],
+                                index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"])
+                        }
+
+    # creates Dataframe.
+    df = pd.DataFrame(Standard_Pricing)
+
+
+
+    '''# Create DataFrame
+    df = pd.DataFrame(data)
+    London_dict = {
+        "Drug": "Cocaine","Crack","LSD","Ecstasy","Weed",
+        "price": "1000","800","600","200","50",
+        "Variaion": "+-40%","+-80%","+-60%","+-20%"
+    }'''
+
+
+
+
 
 #Main Loop
 while True:
@@ -200,4 +234,4 @@ while True:
             MouseX = event.pos[0] # x
             MouseY = event.pos[1] # y
 
-    pygame.display.update())
+    pygame.display.update()
