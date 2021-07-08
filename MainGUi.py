@@ -171,6 +171,7 @@ def Quit_button():
     pygame.font.init()
     smallfont = pygame.font.SysFont('Arial', 30)
     text = smallfont.render('Quit', True, color_white)
+    #market_dict["london"] = load_pricing("London.csv")
     while True:
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
@@ -193,6 +194,12 @@ def Quit_button():
 
 Quit_button()
 
+
+def load_pricing(filename):
+
+    return #the dataframe
+
+
 def Market():
     # Initialise data to Dicts of series.
     Standard_Pricing = {'Current Price': pd.Series([1600, 800, 400, 200, 100],
@@ -211,10 +218,7 @@ def Market():
                                 index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"])
                         }
 
-    # creates Dataframe.
     df = pd.DataFrame(Standard_Pricing)
-
-
 
     '''# Create DataFrame
     df = pd.DataFrame(data)
