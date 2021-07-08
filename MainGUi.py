@@ -168,15 +168,19 @@ def Quit_button():
     color_dark = (110, 110, 110)
     width = screen.get_width()
     height = screen.get_height()
+    pygame.font.init()
     smallfont = pygame.font.SysFont('Arial', 30)
     text = smallfont.render('Quit', True, color_white)
     while True:
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
-                pygame.quit()
+                sys.exit()
             if e.type == pygame.MOUSEBUTTONDOWN:
-                if width / 2 <= mouse[0] <= width / 2 + 140 and height / 2 <= mouse[1] <= height / 2 + 40:
-                    pygame.quit()
+
+                mouse = pygame.mouse.get_pos()
+                # prints position of mouse clicked print(f"Mouse clicked at {mouse[0]},{mouse[1]}")
+                if 190 <= mouse[0] <= 190 + 120 and 740 <= mouse[1] <= 740 + 30:
+                    sys.exit()
 
         mouse = pygame.mouse.get_pos()
         if width / 2 <= mouse[0] <= width / 2 + 140 and height / 2 <= mouse[1] <= height / 2 + 40:
