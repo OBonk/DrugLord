@@ -22,6 +22,15 @@ screen = pygame.display.set_mode( (WIDTH, HEIGHT) )
 pygame.display.set_caption( 'DrugLord' )
 screen.fill( BG_COLOR )
 
+def dictionary_places():
+    BirminghamDF = pd.read_csv("Birmingham.csv")
+    BristolDF = pd.read_csv("BristolDL.csv")
+    LondonDF = pd.read_csv("LondonDL.csv")
+    NottinghamDF = pd.read_csv("NottinghamDL.csv")
+
+    Dict = {1: ' BirminghamDF', 2: 'BristolDF ', 3: 'LondonDF', 4:'NottinghamDF'}
+
+
 
 def event_screen():
     # Initialing Color
@@ -168,26 +177,44 @@ def Quit_button():
     color_dark = (110, 110, 110)
     width = screen.get_width()
     height = screen.get_height()
+    pygame.font.init()
     smallfont = pygame.font.SysFont('Arial', 30)
     text = smallfont.render('Quit', True, color_white)
+    quit_text = text.get_rect(center=(250,755))
+    screen.blit(text, quit_text)
+    #market_dict["london"] = load_pricing("London.csv")
     while True:
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
-                pygame.quit()
+                sys.exit()
             if e.type == pygame.MOUSEBUTTONDOWN:
-                if width / 2 <= mouse[0] <= width / 2 + 140 and height / 2 <= mouse[1] <= height / 2 + 40:
-                    pygame.quit()
+
+                mouse = pygame.mouse.get_pos()
+                # prints position of mouse clicked print(f"Mouse clicked at {mouse[0]},{mouse[1]}")
+                if 190 <= mouse[0] <= 190 + 120 and 740 <= mouse[1] <= 740 + 30:
+                    sys.exit()
 
         mouse = pygame.mouse.get_pos()
-        if width / 2 <= mouse[0] <= width / 2 + 140 and height / 2 <= mouse[1] <= height / 2 + 40:
+        if 190 <= mouse[0] <= 190 + 120 and 740 <= mouse[1] <= 740 + 30:
             pygame.draw.rect(screen, color_light, [190, 740, 120, 30])
+            screen.blit(text, quit_text)
         else:
             pygame.draw.rect(screen, color_dark, [190, 740, 120, 30])
-        screen.blit(text, (width / 2 + 50, height / 2))
+            screen.blit(text, quit_text)
+
+
+        #screen.blit(text, (width / 2 + 50, height / 2))
         pygame.display.update()
 
-
 Quit_button()
+
+def mouse_clicking():
+    pass
+
+def load_pricing(filename):
+
+    return #the dataframe
+
 
 def Market():
     # Initialise data to Dicts of series.
@@ -207,10 +234,7 @@ def Market():
                                 index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"])
                         }
 
-    # creates Dataframe.
     df = pd.DataFrame(Standard_Pricing)
-
-
 
     '''# Create DataFrame
     df = pd.DataFrame(data)
