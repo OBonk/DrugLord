@@ -49,14 +49,7 @@ def main_Buttons(x1,y1):
             return but.name
     return None
 
-def player_struct():
-    playerStruct = namedtuple("playerStruct","location inventory balance")
-    p1 = playerStruct(location= "Bristol", inventory= {"Cocaine":0, "Crack":0, "LSD":0, "Ecstasy":0,"Weed": 0}, balance=0)
-    arrofplayers = [p1]
 
-    for names in arrofplayers:
-        if names.location == "London":
-            print(names.inventory)
 
 def dictionary_places():
     BirminghamDF = pd.read_csv("Birmingham.csv")
@@ -122,6 +115,16 @@ def buy_button():
 
 buy_button()
 
+# example for buy do for all
+def Buy(mode):
+    if mode == "hover":
+        color = (125, 125, 125)
+        # Drawing Rectangle                        right down width height
+        pygame.draw.rect(screen, color, pygame.Rect(190, 250, 120, 30))
+        pygame.display.flip()
+    elif mode == "clicked":
+        "TBI"
+        #do what happens when buy button is clicked
 def sell_button():
     color = (175, 175, 175)
     # Drawing Rectangle                        right down width height
@@ -209,6 +212,9 @@ def main_loop():
     pygame.draw.rect(screen, color, pygame.Rect(190, 740, 120, 30))
     pygame.display.flip()
     #define playerStruct and player here
+    playerStruct = namedtuple("playerStruct", "location inventory balance")
+    p1 = playerStruct(location="Bristol", inventory={"Cocaine": 0, "Crack": 0, "LSD": 0, "Ecstasy": 0, "Weed": 0},
+                      balance=0)
     color_white = (255, 255, 255)
     color_light = (180, 180, 180)
     color_dark = (110, 110, 110)
