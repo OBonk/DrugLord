@@ -23,7 +23,7 @@ screen = pygame.display.set_mode( (WIDTH, HEIGHT) )
 pygame.display.set_caption( 'DrugLord' )
 screen.fill( BG_COLOR )
 
-def main_Buttons():
+def main_Buttons(x1,y1):
     buttonStruct = namedtuple("buttonStruct", "x y width height name")
 
 
@@ -46,8 +46,8 @@ def main_Buttons():
     for but in buts:
         print(but.x)
         if but.x <= x1 <= (but.x + but.width) and but.y <= y1 <= (but.y + but.height):
-            print("you clicked: ", but.name)
-            break
+            return but.name
+    return None
 
 def player_struct():
     playerStruct = namedtuple("playerStruct","location inventory balance")
@@ -67,6 +67,7 @@ def dictionary_places():
     Dict = {1: ' BirminghamDF', 2: 'BristolDF ', 3: 'LondonDF', 4:'NottinghamDF'}
 
 
+#def hover_check():
 
 def event_screen():
     # Initialing Color
@@ -202,12 +203,12 @@ def High_Score_button():
 
 High_Score_button()
 
-def Quit_button():
+def main_loop():
     color = (175, 175, 175)
     # Drawing Rectangle                        right down width height
     pygame.draw.rect(screen, color, pygame.Rect(190, 740, 120, 30))
     pygame.display.flip()
-
+    #define playerStruct and player here
     color_white = (255, 255, 255)
     color_light = (180, 180, 180)
     color_dark = (110, 110, 110)
@@ -226,11 +227,26 @@ def Quit_button():
             if e.type == pygame.MOUSEBUTTONDOWN:
 
                 mouse = pygame.mouse.get_pos()
-                # prints position of mouse clicked print(f"Mouse clicked at {mouse[0]},{mouse[1]}")
+                # prints position of mouse clicked
+                print(f"Mouse clicked at {mouse[0]},{mouse[1]}")
                 if 190 <= mouse[0] <= 190 + 120 and 740 <= mouse[1] <= 740 + 30:
                     sys.exit()
 
         mouse = pygame.mouse.get_pos()
+        #hover_check(mouse[0],mouse[1])
+        #market at 20,240 and is 140 wide and 540 long
+        #button at is 180,240 and 140 wide and 540 long
+        if 180 <= mouse[0] <= 320 and 240 <= mouse[1] <= 780:
+            #in button area
+            print("cool you are in button area")
+            butClicked = main_Buttons(mouse[0],mouse[1])
+            #calls function named after button
+            eval(butClicked+"()")
+        elif 20 <= mouse[0] <= 160 and 240 <= mouse[1] <= 780:
+            #in market area
+            print("cool you are in market area")
+            #hover_checkM(mouse[0,mouse[1]])
+
         if 190 <= mouse[0] <= 190 + 120 and 740 <= mouse[1] <= 740 + 30:
             pygame.draw.rect(screen, color_light, [190, 740, 120, 30])
             screen.blit(text, quit_text)
@@ -242,7 +258,7 @@ def Quit_button():
         #screen.blit(text, (width / 2 + 50, height / 2))
         pygame.display.update()
 
-Quit_button()
+main_loop()
 
 def mouse_clicking():
     pass
