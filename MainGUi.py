@@ -22,15 +22,6 @@ screen = pygame.display.set_mode( (WIDTH, HEIGHT) )
 pygame.display.set_caption( 'DrugLord' )
 screen.fill( BG_COLOR )
 
-def dictionary_places():
-    BirminghamDF = pd.read_csv("Birmingham.csv")
-    BristolDF = pd.read_csv("BristolDL.csv")
-    LondonDF = pd.read_csv("LondonDL.csv")
-    NottinghamDF = pd.read_csv("NottinghamDL.csv")
-
-    Dict = {1: ' BirminghamDF', 2: 'BristolDF ', 3: 'LondonDF', 4:'NottinghamDF'}
-
-
 
 def event_screen():
     # Initialing Color
@@ -208,8 +199,6 @@ def Quit_button():
 
 Quit_button()
 
-def mouse_clicking():
-    pass
 
 def load_pricing(filename):
 
