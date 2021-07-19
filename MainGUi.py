@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter.font as font
 #import Pillow not working do not know why
+from PIL import ImageTk, Image
 #import sqlite3
 
 #splash_root = Tk()
