@@ -95,8 +95,9 @@ def StayHere():
     df_rows = BirminghamDF.to_numpy().tolist()
     for row in df_rows:
         tv.insert("","end",values= row)
-    return None
     tv.pack()
+    return None
+
     #placeDf = Dictofplaces[p1.location]
     #frame = Frame(BuyScreen)
     #frame.pack(fill='both', expand=True)
