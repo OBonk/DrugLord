@@ -2,10 +2,12 @@ from tkinter import *
 import tkinter.font as font
 from collections import namedtuple
 import pandas as pd
+import numpy as np
 from pandastable import Table, TableModel
 from tkinter.ttk import Treeview
 import sys
 import random
+import time
 #import Pillow not working do not know why
 from PIL import ImageTk, Image
 #import sqlite3
@@ -15,6 +17,8 @@ from PIL import ImageTk, Image
 
 root = Tk()
 root.title("Get guuuuuddddd")
+
+
 #cannt get this to work
 #root.iconbitmap("marioMushroom.png")
 #myImage = ImageTK.PhotoImage(Image.open("Whatever Pic I Need"))
@@ -22,6 +26,11 @@ root.title("Get guuuuuddddd")
 root.geometry("800x600")
 root.configure(background='#D6EAF8')
 
+#Loading_Screen = Canvas(root, width = 800, height = 600, bg = "white")
+#Loading_Screen.pack()
+#root.update()
+#time.sleep(5)
+#Loading_Screen.pack_forget()
 #Creating dictionary of dataframes
 BirminghamDF = pd.read_csv("Birmingham.csv")
 BristolDF = pd.read_csv("BristolDL.csv")
@@ -30,7 +39,7 @@ NottinghamDF = pd.read_csv("NottinghamDL.csv")
 
 Dictofplaces = {'Birmingham': BirminghamDF, 'Bristol': BristolDF, 'London': LondonDF, 'Nottingham': NottinghamDF}
 
-
+Days = 0
 
 playerStruct = namedtuple("playerStruct","location inventory balance health")
 p1 = playerStruct(location = "Bristol", inventory= {"Cocaine":0, "Crack":0, "LSD":0, "Ecstasy":0,"Weed": 0, }, balance=0, health = 100)
@@ -69,21 +78,45 @@ def Sail():
 
 
 def StayHere():
-    placeDf = Dictofplaces[p1.location]
-    frame = Frame(BuyScreen)
-    frame.pack(fill='both', expand=True)
+    Days =+ 1
 
-    pt = Table(frame, dataframe=placeDf )
-    pt.show()
+    tv = Treeview(BuyScreen)
+    tv.place(relheight=1,relwidth=1) #
+    #Used for scrolling
+    #treescrolly = tk.Scrollbar(buyscreen, orient= "vertical", command=tv.yveiw)
+    #treescrollx = tk.Scrollbar(buyscreen, orient= "horizontal", command=tv.yveix)
+    #tv.configure(xscrollcommand=treescrollx.set,yscrollcommand=treescrolly.set)
+    #treescrollx.pack(side=bottom,fill="x")
+    #treescrolly.pack(side=bottom,fill="y")
+    tv['columns'] = list(BirminghamDF.columns)
+    tv['show'] = "headings"
+    for column in tv['columns']:
+        tv.heading(column, text = column)
+    df_rows = BirminghamDF.to_numpy().tolist()
+    for row in df_rows:
+        tv.insert("","end",values= row)
+    return None
+    tv.pack()
+    #placeDf = Dictofplaces[p1.location]
+    #frame = Frame(BuyScreen)
+    #frame.pack(fill='both', expand=True)
+
+    #pt = Table(frame, dataframe=placeDf )
+    #pt.show()
 
 def Places():
-    pass
+    Days = + 1
+
 
 def Options():
     pass
 
 def HighScore():
     pass
+
+def end_game():
+    if Days == 30:
+        print("HighScore and congrats")
 
 def Quit():
     root.destroy()
@@ -205,7 +238,7 @@ myButtonQuit = Button(ButtonFrame, text = "Quit", fg = button2,width= 8,
                       bg = button1, command = Quit,borderwidth=10, font = buttonFont)
 myButtonQuit.grid(row = 6 ,column = 2, columnspan = 1, rowspan = 1,padx = 2, pady = 2)
 
-
+#Loading_Screen.pack
 
 
 #e = Entry(root, width = 50, borderwidth=10)
