@@ -1,4 +1,4 @@
-,Current Price,Min Price,Max Price,Detection Per Unit,Special event increase %,Special event decrease %,Quantity
+Drug,Current Price,Min Price,Max Price,Detection Per Unit,Special event increase %,Special event decrease %,Quantity
 Crack,800,600,1000,0.5,150,-90,10
 LSD,400,300,500,0.25,200,-90,20
 Ecstasy,200,150,250,0.125,250,-90,40

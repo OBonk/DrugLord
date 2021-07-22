@@ -3,7 +3,7 @@ import tkinter.font as font
 from collections import namedtuple
 import pandas as pd
 from pandastable import Table, TableModel
-#from tkinter.ttk import *
+from tkinter.ttk import Treeview
 import sys
 import random
 #import Pillow not working do not know why
@@ -22,7 +22,23 @@ root.title("Get guuuuuddddd")
 root.geometry("800x600")
 root.configure(background='#D6EAF8')
 
+#Creating dictionary of dataframes
+BirminghamDF = pd.read_csv("Birmingham.csv")
+BristolDF = pd.read_csv("BristolDL.csv")
+LondonDF = pd.read_csv("LondonDL.csv")
+NottinghamDF = pd.read_csv("NottinghamDL.csv")
 
+Dictofplaces = {'Birmingham': BirminghamDF, 'Bristol': BristolDF, 'London': LondonDF, 'Nottingham': NottinghamDF}
+
+
+
+playerStruct = namedtuple("playerStruct","location inventory balance health")
+p1 = playerStruct(location = "Bristol", inventory= {"Cocaine":0, "Crack":0, "LSD":0, "Ecstasy":0,"Weed": 0, }, balance=0, health = 100)
+#how to change players values
+#p1.location = "London"
+
+
+#Colours
 bg1 = "#F1948A"
 fg1 = "white"
 hlbg = "#8E44AD"
@@ -51,12 +67,13 @@ def Sell():
 def Sail():
     pass
 
-def StayHere(Market,BirminghamDF):
-    g = BirminghamDF
+
+def StayHere():
+    placeDf = Dictofplaces[p1.location]
     frame = Frame(BuyScreen)
     frame.pack(fill='both', expand=True)
 
-    pt = Table(frame, dataframe=g )
+    pt = Table(frame, dataframe=placeDf )
     pt.show()
 
 def Places():
@@ -67,39 +84,6 @@ def Options():
 
 def HighScore():
     pass
-
-def player_struct():
-    playerStruct = namedtuple("playerStruct","location inventory balance")
-    p1 = playerStruct(location= "Bristol", inventory= {"Cocaine":0, "Crack":0, "LSD":0, "Ecstasy":0,"Weed": 0, }, balance=0, Health = 100)
-    arrofplayers = [p1]
-
-def dictionary_places(StayHere):
-    BirminghamDF = pd.read_csv("Birmingham.csv")
-    BristolDF = pd.read_csv("BristolDL.csv")
-    LondonDF = pd.read_csv("LondonDL.csv")
-    NottinghamDF = pd.read_csv("NottinghamDL.csv")
-
-    Dict = {1: ' BirminghamDF', 2: 'BristolDF ', 3: 'LondonDF', 4:'NottinghamDF'}
-
-def Market():
-    # Initialise data to Dicts of series.
-    Standard_Pricing = {'Current Price': pd.Series([1600, 800, 400, 200, 100],
-                                index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"]),
-                        'Min Price': pd.Series([1200, 600, 300, 150, 75],
-                                index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"]),
-                        'Max Price': pd.Series([2000, 1200, 500, 250, 125],
-                                index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"]),
-                        'Detection Per a Unit': pd.Series([1, 0.5, 0.25, 0.125, 0.005],
-                                index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"]),
-                        'Special event increase %': pd.Series([200, 150, 300, 500, 600],
-                                index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"]),
-                        'Special event decrease %': pd.Series([-90, -90, -90, -90, -90],
-                                index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"]),
-                        'Quantity': pd.Series([5, 10, 20, 40, 80],
-                                index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"])
-                        }
-
-    df = pd.DataFrame(Standard_Pricing)
 
 def Quit():
     root.destroy()

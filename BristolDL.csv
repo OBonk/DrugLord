@@ -1,4 +1,4 @@
-,Current Price,Min Price,Max Price,Detection Per Unit,Special event increase %,Special event decrease %,Quantity
+Drug,Current Price,Min Price,Max Price,Detection Per Unit,Special event increase %,Special event decrease %,Quantity
 Cocaine,1800,1000,2500,1,100,-90,2
 Crack,900,500,1250,0.5,150,-90,5
 LSD,450,250,750,0.25,200,-90,10
