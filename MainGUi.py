@@ -32,12 +32,12 @@ root.configure(background='#D6EAF8')
 #time.sleep(5)
 #Loading_Screen.pack_forget()
 #Creating dictionary of dataframes
-BirminghamDF = pd.read_csv("Birmingham.csv")
-BristolDF = pd.read_csv("BristolDL.csv")
-LondonDF = pd.read_csv("LondonDL.csv")
-NottinghamDF = pd.read_csv("NottinghamDL.csv")
+#BirminghamDF = pd.read_csv("Birmingham.csv")
+#BristolDF = pd.read_csv("BristolDL.csv")
+#LondonDF = pd.read_csv("LondonDL.csv")
+#NottinghamDF = pd.read_csv("NottinghamDL.csv")
 
-Dictofplaces = {'Birmingham': BirminghamDF, 'Bristol': BristolDF, 'London': LondonDF, 'Nottingham': NottinghamDF}
+#Dictofplaces = {'Birmingham': BirminghamDF, 'Bristol': BristolDF, 'London': LondonDF, 'Nottingham': NottinghamDF}
 
 Days = 0
 
@@ -45,6 +45,42 @@ playerStruct = namedtuple("playerStruct","location inventory balance health")
 p1 = playerStruct(location = "Bristol", inventory= {"Cocaine":0, "Crack":0, "LSD":0, "Ecstasy":0,"Weed": 0, }, balance=0, health = 100)
 #how to change players values
 #p1.location = "London"
+
+#Current_Price = [1600, 800, 400, 200, 100]
+#Quantity = [5, 10, 20, 40, 80]
+
+
+Birmingham_price = [random.randrange(1200,2000), random.randrange(600,1000), random.randrange(200,500),
+                    random.randrange(150,250), random.randrange(75,125)]
+Birmingham_quantity = [random.randrange(1,5), random.randrange(1,10), 0, random.randrange(10,40), random.randrange(20,80)]
+
+Bristol_price = [random.randrange(1000,2500), random.randrange(500,1250), random.randrange(250,750),
+                    random.randrange(125,325), random.randrange(50,225)]
+Bristol_quantity = [random.randrange(1,5), random.randrange(1,10), random.randrange(1,20),
+                    random.randrange(10,40), random.randrange(20,80)]
+
+London_price = [random.randrange(1200,2000), random.randrange(600,1000), random.randrange(250,750),
+                    random.randrange(150,250), random.randrange(75,125)]
+London_quantity = [random.randrange(1,5), random.randrange(1,10), 0,
+                    random.randrange(10,40), random.randrange(20,80)]
+
+Nottingham_price = [random.randrange(1200,2000), random.randrange(600,1000), random.randrange(300,500),
+                    random.randrange(150,250), random.randrange(75,125)]
+Nottingham_quantity = [0, random.randrange(1,10), random.randrange(1,20),
+                    random.randrange(10,40), random.randrange(20,80)]
+
+BirminghamDF = pd.DataFrame(Birmingham_price, Birmingham_quantity,
+                            index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],columns =['Price','Quantity'])
+def random():
+
+
+    '''if stayhere or palces or sail:
+
+        Days =+ 1
+
+
+        '''
+    pass
 
 
 #Colours
@@ -78,7 +114,7 @@ def Sail():
 
 
 def StayHere():
-    Days =+ 1
+
 
     tv = Treeview(BuyScreen)
     tv.place(relheight=1,relwidth=1) #
@@ -106,11 +142,13 @@ def StayHere():
     #pt.show()
 
 def Places():
-    Days = + 1
+    pass
+
 
 
 def Options():
     pass
+
 
 def HighScore():
     pass
