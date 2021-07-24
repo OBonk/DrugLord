@@ -42,7 +42,7 @@ root.configure(background='#D6EAF8')
 Days = 0
 
 playerStruct = namedtuple("playerStruct","location inventory balance health")
-p1 = playerStruct(location = "Bristol", inventory= {"Cocaine":0, "Crack":0, "LSD":0, "Ecstasy":0,"Weed": 0, }, balance=0, health = 100)
+p1 = {"balance":1000 }
 #how to change players values
 #p1.location = "London"
 
@@ -70,7 +70,7 @@ Nottingham_quantity = [0, random.randrange(1,10), random.randrange(1,20),
                     random.randrange(10,40), random.randrange(20,80)]
 Birmingham_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Price":Birmingham_price,"Quantity":Birmingham_quantity}
 
-Inventory_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Quantity":Birmingham_quantity}
+Inventory_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Quantity":[0,0,0,0,0]}
 BirminghamDF = pd.DataFrame(data=Birmingham_dict, index =["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"])
 
 #BirminghamDF = pd.DataFrame(Birmingham_price, Birmingham_quantity,["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],columns =['Price','Quantity'])
@@ -102,14 +102,17 @@ text1 = "#85C1E9"
 
 #creating a label widget
 def Buy():
-    tv = Treeview(BuyScreen)
-    selected = tv.focus()
-    temp = tv.item(selected, 'values')
-
+    selected = market_tv.focus()
+    temp = market_tv.item(selected, 'values')
+    temp2 = inv_tv.item(selected,'values')
     # if money is more or equal to cost
-    Transfer = float(temp[2]) + float(temp[2]) * 0.05
-    tv.item(selected, values=(temp[0], temp[1], Transfer))
-
+    if p1["balance"] >= int(temp[1]) and int(temp[2]) > 0:
+        Transfer = int(temp[2]) -1
+        p1["balance"] -= int(temp[1])
+        market_tv.item(selected, values=(temp[0], temp[1], Transfer))
+        inv_tv.item(selected,values=(temp2[0],int(temp2[1])+1))
+    else:
+        'note to self add message to action screen'
 def Remove():
     pass
 
@@ -120,16 +123,17 @@ def Sell():
 def loading_inventory():
     tv = Treeview(InventoryScreen)
     tv.place(relheight=1, relwidth=1)
-    tv['columns'] = list(Inventory_dict.columns)
+    df = pd.DataFrame(data=Inventory_dict)
+    tv['columns'] = list(df.columns)
     tv['show'] = "headings"
     for column in tv['columns']:
         tv.heading(column, text=column)
         tv.column(column, minwidth=0, width=65)
-    df_rows = BirminghamDF.to_numpy().tolist()
+    df_rows = df.to_numpy().tolist()
     for row in df_rows:
         tv.insert("", "end", values=row)
     tv.pack()
-    return None
+    return tv
 
 def load_market(df):
     tv = Treeview(BuyScreen)
@@ -149,7 +153,7 @@ def load_market(df):
     for row in df_rows:
         tv.insert("", "end", values=row)
     tv.pack()
-    return None
+    return tv
 
     # placeDf = Dictofplaces[p1.location]
     # frame = Frame(BuyScreen)
@@ -318,8 +322,8 @@ myButtonQuit.grid(row = 6 ,column = 2, columnspan = 1, rowspan = 1,padx = 2, pad
 
 
 
-loading_inventory()
+inv_tv = loading_inventory()
 
-load_market(BirminghamDF)
+market_tv = load_market(BirminghamDF)
 
 root.mainloop()
