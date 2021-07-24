@@ -4,7 +4,7 @@ from collections import namedtuple
 import pandas as pd
 import numpy as np
 from pandastable import Table, TableModel
-from tkinter.ttk import Treeview,Style
+from tkinter.ttk import Treeview
 import sys
 import random
 import time
@@ -17,8 +17,8 @@ from PIL import ImageTk, Image
 
 root = Tk()
 root.title("Get guuuuuddddd")
-style = Style(root)
-style.configure('Treeview', rowheight=15)
+
+
 #cannt get this to work
 #root.iconbitmap("marioMushroom.png")
 #myImage = ImageTK.PhotoImage(Image.open("Whatever Pic I Need"))
@@ -68,10 +68,9 @@ Nottingham_price = [random.randrange(1200,2000), random.randrange(600,1000), ran
                     random.randrange(150,250), random.randrange(75,125)]
 Nottingham_quantity = [0, random.randrange(1,10), random.randrange(1,20),
                     random.randrange(10,40), random.randrange(20,80)]
-Birmingham_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Price":Birmingham_price,"Quantity":Birmingham_quantity}
-BirminghamDF = pd.DataFrame(data=Birmingham_dict)
 
-#BirminghamDF = pd.DataFrame(Birmingham_price, Birmingham_quantity,["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],columns =['Price','Quantity'])
+BirminghamDF = pd.DataFrame(Birmingham_price, Birmingham_quantity,
+                            index=["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],columns =['Price','Quantity'])
 def random():
 
 
@@ -129,7 +128,6 @@ def StayHere():
     tv['show'] = "headings"
     for column in tv['columns']:
         tv.heading(column, text = column)
-        tv.column(column,minwidth=0,width=65)
     df_rows = BirminghamDF.to_numpy().tolist()
     for row in df_rows:
         tv.insert("","end",values= row)
