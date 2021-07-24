@@ -69,7 +69,9 @@ Nottingham_price = [random.randrange(1200,2000), random.randrange(600,1000), ran
 Nottingham_quantity = [0, random.randrange(1,10), random.randrange(1,20),
                     random.randrange(10,40), random.randrange(20,80)]
 Birmingham_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Price":Birmingham_price,"Quantity":Birmingham_quantity}
-BirminghamDF = pd.DataFrame(data=Birmingham_dict)
+
+Inventory_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Quantity":Birmingham_quantity}
+BirminghamDF = pd.DataFrame(data=Birmingham_dict, index =["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"])
 
 #BirminghamDF = pd.DataFrame(Birmingham_price, Birmingham_quantity,["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],columns =['Price','Quantity'])
 def random():
@@ -100,9 +102,13 @@ text1 = "#85C1E9"
 
 #creating a label widget
 def Buy():
+    tv = Treeview(BuyScreen)
+    selected = tv.focus()
+    temp = tv.item(selected, 'values')
 
-    my_label = Label(root, text = "Hello Yankerrrr MOOOOOOO! XXXX", padx = 50, pady = 50, font = buttonFont)
-    my_label.grid(row= 0, column =3)
+    # if money is more or equal to cost
+    Transfer = float(temp[2]) + float(temp[2]) * 0.05
+    tv.item(selected, values=(temp[0], temp[1], Transfer))
 
 def Remove():
     pass
@@ -110,38 +116,57 @@ def Remove():
 def Sell():
     pass
 
+
+def loading_inventory():
+    tv = Treeview(InventoryScreen)
+    tv.place(relheight=1, relwidth=1)
+    tv['columns'] = list(Inventory_dict.columns)
+    tv['show'] = "headings"
+    for column in tv['columns']:
+        tv.heading(column, text=column)
+        tv.column(column, minwidth=0, width=65)
+    df_rows = BirminghamDF.to_numpy().tolist()
+    for row in df_rows:
+        tv.insert("", "end", values=row)
+    tv.pack()
+    return None
+
+def load_market(df):
+    tv = Treeview(BuyScreen)
+    tv.place(relheight=1, relwidth=1)  #
+    # Used for scrolling
+    # treescrolly = tk.Scrollbar(buyscreen, orient= "vertical", command=tv.yveiw)
+    # treescrollx = tk.Scrollbar(buyscreen, orient= "horizontal", command=tv.yveix)
+    # tv.configure(xscrollcommand=treescrollx.set,yscrollcommand=treescrolly.set)
+    # treescrollx.pack(side=bottom,fill="x")
+    # treescrolly.pack(side=bottom,fill="y")
+    tv['columns'] = list(df.columns)
+    tv['show'] = "headings"
+    for column in tv['columns']:
+        tv.heading(column, text=column)
+        tv.column(column, minwidth=0, width=65)
+    df_rows = df.to_numpy().tolist()
+    for row in df_rows:
+        tv.insert("", "end", values=row)
+    tv.pack()
+    return None
+
+    # placeDf = Dictofplaces[p1.location]
+    # frame = Frame(BuyScreen)
+    # frame.pack(fill='both', expand=True)
+
+    # pt = Table(frame, dataframe=placeDf )
+    # pt.show()
+
+
 def Sail():
     pass
 
 
+
 def StayHere():
+    pass
 
-
-    tv = Treeview(BuyScreen)
-    tv.place(relheight=1,relwidth=1) #
-    #Used for scrolling
-    #treescrolly = tk.Scrollbar(buyscreen, orient= "vertical", command=tv.yveiw)
-    #treescrollx = tk.Scrollbar(buyscreen, orient= "horizontal", command=tv.yveix)
-    #tv.configure(xscrollcommand=treescrollx.set,yscrollcommand=treescrolly.set)
-    #treescrollx.pack(side=bottom,fill="x")
-    #treescrolly.pack(side=bottom,fill="y")
-    tv['columns'] = list(BirminghamDF.columns)
-    tv['show'] = "headings"
-    for column in tv['columns']:
-        tv.heading(column, text = column)
-        tv.column(column,minwidth=0,width=65)
-    df_rows = BirminghamDF.to_numpy().tolist()
-    for row in df_rows:
-        tv.insert("","end",values= row)
-    tv.pack()
-    return None
-
-    #placeDf = Dictofplaces[p1.location]
-    #frame = Frame(BuyScreen)
-    #frame.pack(fill='both', expand=True)
-
-    #pt = Table(frame, dataframe=placeDf )
-    #pt.show()
 
 def Places():
     pass
@@ -293,7 +318,8 @@ myButtonQuit.grid(row = 6 ,column = 2, columnspan = 1, rowspan = 1,padx = 2, pad
 
 
 
+loading_inventory()
 
-
+load_market(BirminghamDF)
 
 root.mainloop()
