@@ -88,9 +88,10 @@ NottinghamDF = pd.DataFrame(data=Nottingham_dict, index =["Cocaine", "Crack", "L
 
 
 #creating random encounter
-chance_of_dectection = 4
-#chance_of_dectection = sum(Inventory_dict["Drug"]["Cocaine"]*5),(Inventory_dict["Drug"]["Crack"]*3),(Inventory_dict["Drug"]["LSD"]*2),\
-                        #(Inventory_dict["Drug"]["Ecstasy"]*1), (Inventory_dict["Drug"]["Weed"]*1)
+#Extracted quantities list from inventory Dict and then used in sum
+quantities = Inventory_dict["Quantity"]
+chance_of_dectection = sum([quantities[0]*5,quantities[1]*3,quantities[2]*2,
+                        quantities[3], quantities[4]])
 #BirminghamDF = pd.DataFrame(Birmingham_price, Birmingham_quantity,["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],columns =['Price','Quantity'])
 
 #Colours
@@ -115,26 +116,28 @@ def combat():###########Canvas does not work
 
 def random_encounter():
     # I do not understand weights and why do I need numbers
-    nothing_happens = 100
-    freak_happiness = 10
 
-    numberList = [nothing_happens,chance_of_dectection, freak_happiness]
-    R_E = random.choices(numberList, weights=(100, chance_of_dectection, 10, ), k=1)
-    if R_E == nothing_happens:
+
+    numberList = ["nothing_happens","dectected", "freak_happiness"]
+    R_E = random.choices(numberList, weights=[100, chance_of_dectection, 10],k=1)
+    if R_E == "nothing_happens":
         'nothing happens'
-    elif R_E == chance_of_dectection:
+    elif R_E == "detected":
         combat()
-    elif R_E == freak_happiness:
-        p1["balance"] + 500
+    elif R_E == "freak_happiness":
+        p1["balance"] += 500
 
 
 def shop(): #Canvas does not work
     Katana = p1["balance"]-500
     Gun = p1["balance"]-1000
     ammo = p1["balance"]-10
-
+    #Solutions: Create new tk window for shop
+    #2: Create a function to hide all widgets on screen
     place_map = Canvas(root, width=800, height=600, bg="white")
-    place_map.pack()
+
+    place_map.place(x=100,y=100)
+    Misc.lift(place_map)
 
     Katana_Button = Button(place_map, text="Katana - $500", fg=button2, width=8,
                                bg=button1, command= Katana,borderwidth=10, font=buttonFont)
@@ -151,7 +154,6 @@ def shop(): #Canvas does not work
                                bg=button1, command=lambda: [place_forget()],
                                borderwidth=10, font=buttonFont)
     Leave_Button.pack()
-
 def Buy():
     #this allows you to select the grid
     selected = market_tv.focus()
@@ -176,11 +178,15 @@ def Sell():
     temp = market_tv.item(selected, 'values')
     temp2 = inv_tv.item(selected, 'values')
     #if the selected from is greater than
-    if selected > 0:
+    if int(temp2[1])> 0:
         #this removes the drug
         Transfer = int(temp2[1]) - 1
         #this puts money into the balance
         p1["balance"] += int(temp[1])
+
+        # now we edit the values in the actual treeviews on the screen
+        market_tv.item(selected, values=(temp[0], temp[1],int(temp[2])+1 ))
+        inv_tv.item(selected, values=(temp2[0], Transfer))
     else:
         'note to self add message to action screen'
 
@@ -200,7 +206,10 @@ def loading_inventory():
     tv.pack()
     return tv
 
-def load_market(df):
+def load_market(df,preloaded=True):
+    if preloaded:
+        print("this should work")
+        market_tv.pack_forget()
     tv = Treeview(BuyScreen)
     tv.place(relheight=1, relwidth=1)  #
 
@@ -234,25 +243,25 @@ def StayHere(load_market,Days):
     pass
 
 
-def Places(df):###################### or how to create the canvas loading onto the root
+def Places():###################### or how to create the canvas loading onto the root
     # I have 3 commands I do not know how to assgin the specific dataframe for load market.
     place_map = Canvas(root, width = 800, height = 600, bg = "white")
-    place_map.pack()
+    place_map.place(x=0,y=0)
     root.update()
     Birmingham_Button = Button(place_map, text="Buy", fg=button2, width=8,
-                         bg=button1, command=lambda:[place_forget(),load_market(df),random_encounter()],  borderwidth=10, font=buttonFont)
+                         bg=button1, command=lambda:[place_forget(place_map),load_market(BirminghamDF),random_encounter()],  borderwidth=10, font=buttonFont)
     Birmingham_Button.pack()
 
     Bristol_Button = Button(place_map, text="Remove", fg=button2, width=8,
-                          bg=button1, command=lambda:[place_forget(),load_market(df),random_encounter()], borderwidth=10, font=buttonFont)
+                          bg=button1, command=lambda:[place_forget(place_map),load_market(BristolDF),random_encounter()], borderwidth=10, font=buttonFont)
     Bristol_Button.pack()
 
     London_Button = Button(place_map, text="Sell", fg=button2, width=8,
-                          bg=button1, command=lambda:[place_forget(),load_market(df),random_encounter()], borderwidth=10, font=buttonFont)
+                          bg=button1, command=lambda:[place_forget(place_map),load_market(LondonDF),random_encounter()], borderwidth=10, font=buttonFont)
     London_Button.pack()
 
     Nottingham_button = Button(place_map, text="Sell", fg=button2, width=8,
-                           bg=button1, command=lambda:[place_forget(),load_market(df),random_encounter()], borderwidth=10, font=buttonFont)
+                           bg=button1, command=lambda:[place_forget(place_map),load_market(NottinghamDF),random_encounter()], borderwidth=10, font=buttonFont)
     Nottingham_button.pack()
 
 
@@ -333,8 +342,9 @@ PersonFrame = LabelFrame(LHS_Frame, text = "Your Stats",width = 160, height = 16
 PersonFrame.grid(row = 2 ,column = 1, columnspan = 1, rowspan = 1)
 Person = Canvas(PersonFrame, width = 180, height = 140,  highlightthickness=4)
 Person.pack()
-Health_and_Balance = Label(PersonFrame,text = "Health p1[health]",font =buttonFont)
-Health_and_Balance.pack####################Why does this not work????
+
+Health_and_Balance = Label(Person,text = "Health" + str(p1["health"]),font =buttonFont,fg="black")
+Health_and_Balance.pack()####################Why does this not work????
 
 
 # Buy_Sell_Button_Frame
@@ -420,6 +430,6 @@ myButtonShop.grid(row = 7 ,column = 2, columnspan = 1, rowspan = 1,padx = 2, pad
 
 inv_tv = loading_inventory()
 
-market_tv = load_market(BirminghamDF)
+market_tv = load_market(BirminghamDF,False)
 
 root.mainloop()
