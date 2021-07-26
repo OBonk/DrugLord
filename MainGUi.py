@@ -39,10 +39,16 @@ root.configure(background='#D6EAF8')
 
 #Dictofplaces = {'Birmingham': BirminghamDF, 'Bristol': BristolDF, 'London': LondonDF, 'Nottingham': NottinghamDF}
 
+#sound
+
+
+#player and enemies
 Days = 0
 
 playerStruct = namedtuple("playerStruct","location inventory balance health")
-p1 = {"balance":1000 }
+p1 = {"balance":1000,"health":100,"fists":3 }
+cop = {"balance":10,"health":5,"Gun":10 }
+
 #how to change players values
 #p1.location = "London"
 
@@ -69,22 +75,23 @@ Nottingham_price = [random.randrange(1200,2000), random.randrange(600,1000), ran
 Nottingham_quantity = [0, random.randrange(1,10), random.randrange(1,20),
                     random.randrange(10,40), random.randrange(20,80)]
 Birmingham_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Price":Birmingham_price,"Quantity":Birmingham_quantity}
-
+Bristol_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Price":Bristol_price,"Quantity":Bristol_quantity}
+London_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Price":London_price,"Quantity":London_quantity}
+Nottingham_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Price":Nottingham_price,"Quantity":Nottingham_quantity}
 Inventory_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Quantity":[0,0,0,0,0]}
+
+
 BirminghamDF = pd.DataFrame(data=Birmingham_dict, index =["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"])
+BristolDF = pd.DataFrame(data=Bristol_dict, index =["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"])
+LondonDF = pd.DataFrame(data=London_dict, index =["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"])
+NottinghamDF = pd.DataFrame(data=Nottingham_dict, index =["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"])
 
+
+#creating random encounter
+chance_of_dectection = 4
+#chance_of_dectection = sum(Inventory_dict["Drug"]["Cocaine"]*5),(Inventory_dict["Drug"]["Crack"]*3),(Inventory_dict["Drug"]["LSD"]*2),\
+                        #(Inventory_dict["Drug"]["Ecstasy"]*1), (Inventory_dict["Drug"]["Weed"]*1)
 #BirminghamDF = pd.DataFrame(Birmingham_price, Birmingham_quantity,["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],columns =['Price','Quantity'])
-def random():
-
-
-    '''if stayhere or palces or sail:
-
-        Days =+ 1
-
-
-        '''
-    pass
-
 
 #Colours
 bg1 = "#F1948A"
@@ -101,23 +108,81 @@ text1 = "#85C1E9"
 #window_main.geometry("600x800")
 
 #creating a label widget
+
+def combat():###########Canvas does not work
+    place_map = Canvas(root, width=800, height=600, bg="white")
+    place_map.pack()
+
+def random_encounter():
+    # I do not understand weights and why do I need numbers
+    nothing_happens = 100
+    freak_happiness = 10
+
+    numberList = [nothing_happens,chance_of_dectection, freak_happiness]
+    R_E = random.choices(numberList, weights=(100, chance_of_dectection, 10, ), k=1)
+    if R_E == nothing_happens:
+        'nothing happens'
+    elif R_E == chance_of_dectection:
+        combat()
+    elif R_E == freak_happiness:
+        p1["balance"] + 500
+
+
+def shop(): #Canvas does not work
+    Katana = p1["balance"]-500
+    Gun = p1["balance"]-1000
+    ammo = p1["balance"]-10
+
+    place_map = Canvas(root, width=800, height=600, bg="white")
+    place_map.pack()
+
+    Katana_Button = Button(place_map, text="Katana - $500", fg=button2, width=8,
+                               bg=button1, command= Katana,borderwidth=10, font=buttonFont)
+    Katana_Button.pack()
+
+    gun_Button =Button(place_map, text="Gun - $1000", fg=button2, width=8,
+                               bg=button1, command=Gun,borderwidth=10, font=buttonFont)
+    gun_Button.pack()
+    ammo_Button = Button(place_map, text="ammo$10", fg=button2, width=8,
+                        bg=button1, command=ammo,borderwidth=10, font=buttonFont)
+    ammo_Button.pack()
+
+    Leave_Button = Button(place_map, text="Leave Shop", fg=button2, width=8,
+                               bg=button1, command=lambda: [place_forget()],
+                               borderwidth=10, font=buttonFont)
+    Leave_Button.pack()
+
 def Buy():
+    #this allows you to select the grid
     selected = market_tv.focus()
+
     temp = market_tv.item(selected, 'values')
-    temp2 = inv_tv.item(selected,'values')
+    temp2 = inv_tv.item(selected, 'values')
     # if money is more or equal to cost
     if p1["balance"] >= int(temp[1]) and int(temp[2]) > 0:
-        Transfer = int(temp[2]) -1
+        Transfer = int(temp[2]) - 1
         p1["balance"] -= int(temp[1])
         market_tv.item(selected, values=(temp[0], temp[1], Transfer))
-        inv_tv.item(selected,values=(temp2[0],int(temp2[1])+1))
+        inv_tv.item(selected, values=(temp2[0], int(temp2[1]) + 1))
     else:
         'note to self add message to action screen'
 def Remove():
     pass
 
 def Sell():
-    pass
+    ################ Havent figured this out
+    selected = inv_tv.focus()
+
+    temp = market_tv.item(selected, 'values')
+    temp2 = inv_tv.item(selected, 'values')
+    #if the selected from is greater than
+    if selected > 0:
+        #this removes the drug
+        Transfer = int(temp2[1]) - 1
+        #this puts money into the balance
+        p1["balance"] += int(temp[1])
+    else:
+        'note to self add message to action screen'
 
 
 def loading_inventory():
@@ -128,7 +193,7 @@ def loading_inventory():
     tv['show'] = "headings"
     for column in tv['columns']:
         tv.heading(column, text=column)
-        tv.column(column, minwidth=0, width=65)
+        tv.column(column, minwidth=0, width=100)
     df_rows = df.to_numpy().tolist()
     for row in df_rows:
         tv.insert("", "end", values=row)
@@ -138,12 +203,7 @@ def loading_inventory():
 def load_market(df):
     tv = Treeview(BuyScreen)
     tv.place(relheight=1, relwidth=1)  #
-    # Used for scrolling
-    # treescrolly = tk.Scrollbar(buyscreen, orient= "vertical", command=tv.yveiw)
-    # treescrollx = tk.Scrollbar(buyscreen, orient= "horizontal", command=tv.yveix)
-    # tv.configure(xscrollcommand=treescrollx.set,yscrollcommand=treescrolly.set)
-    # treescrollx.pack(side=bottom,fill="x")
-    # treescrolly.pack(side=bottom,fill="y")
+
     tv['columns'] = list(df.columns)
     tv['show'] = "headings"
     for column in tv['columns']:
@@ -168,13 +228,37 @@ def Sail():
 
 
 
-def StayHere():
+def StayHere(load_market,Days):
+    load_market()
+    Days += 1# why do I have to put Days as any argument
     pass
 
 
-def Places():
-    pass
+def Places(df):###################### or how to create the canvas loading onto the root
+    # I have 3 commands I do not know how to assgin the specific dataframe for load market.
+    place_map = Canvas(root, width = 800, height = 600, bg = "white")
+    place_map.pack()
+    root.update()
+    Birmingham_Button = Button(place_map, text="Buy", fg=button2, width=8,
+                         bg=button1, command=lambda:[place_forget(),load_market(df),random_encounter()],  borderwidth=10, font=buttonFont)
+    Birmingham_Button.pack()
 
+    Bristol_Button = Button(place_map, text="Remove", fg=button2, width=8,
+                          bg=button1, command=lambda:[place_forget(),load_market(df),random_encounter()], borderwidth=10, font=buttonFont)
+    Bristol_Button.pack()
+
+    London_Button = Button(place_map, text="Sell", fg=button2, width=8,
+                          bg=button1, command=lambda:[place_forget(),load_market(df),random_encounter()], borderwidth=10, font=buttonFont)
+    London_Button.pack()
+
+    Nottingham_button = Button(place_map, text="Sell", fg=button2, width=8,
+                           bg=button1, command=lambda:[place_forget(),load_market(df),random_encounter()], borderwidth=10, font=buttonFont)
+    Nottingham_button.pack()
+
+
+def place_forget(place_map):
+
+    place_map.pack_forget()
 
 
 def Options():
@@ -248,7 +332,10 @@ PersonFrame = LabelFrame(LHS_Frame, text = "Your Stats",width = 160, height = 16
                       highlightbackground = hlbg,padx = 10, pady = 10, bg = bg1,fg = fg1)
 PersonFrame.grid(row = 2 ,column = 1, columnspan = 1, rowspan = 1)
 Person = Canvas(PersonFrame, width = 180, height = 140,  highlightthickness=4)
-Person .pack()
+Person.pack()
+Health_and_Balance = Label(PersonFrame,text = "Health p1[health]",font =buttonFont)
+Health_and_Balance.pack####################Why does this not work????
+
 
 # Buy_Sell_Button_Frame
 #Buy_Sell_Button_Frame = LabelFrame(root,width = 50, height = 10)
@@ -308,6 +395,10 @@ myButtonQuit = Button(ButtonFrame, text = "Quit", fg = button2,width= 8,
                       bg = button1, command = Quit,borderwidth=10, font = buttonFont)
 myButtonQuit.grid(row = 6 ,column = 2, columnspan = 1, rowspan = 1,padx = 2, pady = 2)
 
+myButtonShop = Button(ButtonFrame, text = "shop", fg = button2,width= 8,
+                      bg = button1, command = shop,borderwidth=10, font = buttonFont)
+myButtonShop.grid(row = 7 ,column = 2, columnspan = 1, rowspan = 1,padx = 2, pady = 2)
+
 #Loading_Screen.pack
 
 
@@ -316,7 +407,12 @@ myButtonQuit.grid(row = 6 ,column = 2, columnspan = 1, rowspan = 1,padx = 2, pad
 
 #textBox = root.Enter(text="Placeholder text").grid(row= 0, column =0)
 #you can have .pack at the end orrrrrrr myButton.pack just underneath
-
+# Used for scrolling
+# treescrolly = tk.Scrollbar(buyscreen, orient= "vertical", command=tv.yveiw)
+# treescrollx = tk.Scrollbar(buyscreen, orient= "horizontal", command=tv.yveix)
+# tv.configure(xscrollcommand=treescrollx.set,yscrollcommand=treescrolly.set)
+# treescrollx.pack(side=bottom,fill="x")
+# treescrolly.pack(side=bottom,fill="y")
 
 
 
