@@ -46,8 +46,8 @@ root.configure(background='#D6EAF8')
 Days = 0
 
 playerStruct = namedtuple("playerStruct","location inventory balance health")
-p1 = {"balance":1000,"health":100,"fists":3 }
-cop = {"balance":10,"health":5,"Gun":10 }
+p1 = {"balance":1000,"health":100,"fists":2,"Debt":10000 "Katana":0, "Gun":0,"Ammo":0 }
+cop = {"balance":10,"health":5,"Gun":1,"Ammo":10,"Baton":1 }
 
 #how to change players values
 #p1.location = "London"
@@ -60,20 +60,25 @@ Birmingham_price = [random.randrange(1200,2000), random.randrange(600,1000), ran
                     random.randrange(150,250), random.randrange(75,125)]
 Birmingham_quantity = [random.randrange(1,5), random.randrange(1,10), 0, random.randrange(10,40), random.randrange(20,80)]
 
+
 Bristol_price = [random.randrange(1000,2500), random.randrange(500,1250), random.randrange(250,750),
                     random.randrange(125,325), random.randrange(50,225)]
 Bristol_quantity = [random.randrange(1,5), random.randrange(1,10), random.randrange(1,20),
                     random.randrange(10,40), random.randrange(20,80)]
+
 
 London_price = [random.randrange(1200,2000), random.randrange(600,1000), random.randrange(250,750),
                     random.randrange(150,250), random.randrange(75,125)]
 London_quantity = [random.randrange(1,5), random.randrange(1,10), 0,
                     random.randrange(10,40), random.randrange(20,80)]
 
+
 Nottingham_price = [random.randrange(1200,2000), random.randrange(600,1000), random.randrange(300,500),
                     random.randrange(150,250), random.randrange(75,125)]
 Nottingham_quantity = [0, random.randrange(1,10), random.randrange(1,20),
                     random.randrange(10,40), random.randrange(20,80)]
+
+
 Birmingham_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Price":Birmingham_price,"Quantity":Birmingham_quantity}
 Bristol_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Price":Bristol_price,"Quantity":Bristol_quantity}
 London_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Price":London_price,"Quantity":London_quantity}
@@ -110,9 +115,7 @@ text1 = "#85C1E9"
 
 #creating a label widget
 
-def combat():###########Canvas does not work
-    place_map = Canvas(root, width=800, height=600, bg="white")
-    place_map.pack()
+
 
 def random_encounter():
     # I do not understand weights and why do I need numbers
@@ -134,10 +137,10 @@ def shop(): #Canvas does not work
     ammo = p1["balance"]-10
     #Solutions: Create new tk window for shop
     #2: Create a function to hide all widgets on screen
+    unpack_list()
     place_map = Canvas(root, width=800, height=600, bg="white")
-
-    place_map.place(x=100,y=100)
-    Misc.lift(place_map)
+    # Misc.lift(place_map)
+    place_map.place(height=600, width=800)
 
     Katana_Button = Button(place_map, text="Katana - $500", fg=button2, width=8,
                                bg=button1, command= Katana,borderwidth=10, font=buttonFont)
@@ -151,8 +154,8 @@ def shop(): #Canvas does not work
     ammo_Button.pack()
 
     Leave_Button = Button(place_map, text="Leave Shop", fg=button2, width=8,
-                               bg=button1, command=lambda: [place_forget()],
-                               borderwidth=10, font=buttonFont)
+                          bg=button1, command=lambda: [place_forget(place_map), pack_list()],
+                          borderwidth=10, font=buttonFont)
     Leave_Button.pack()
 def Buy():
     #this allows you to select the grid
@@ -171,7 +174,7 @@ def Buy():
 def Remove():
     pass
 
-def Sell():
+def Sell():#######Not working
     ################ Havent figured this out
     selected = inv_tv.focus()
 
@@ -243,31 +246,38 @@ def StayHere(load_market,Days):
     pass
 
 
-def Places():###################### or how to create the canvas loading onto the root
-    # I have 3 commands I do not know how to assgin the specific dataframe for load market.
+def Places():### how do I
+    unpack_list()
     place_map = Canvas(root, width = 800, height = 600, bg = "white")
-    place_map.place(x=0,y=0)
-    root.update()
-    Birmingham_Button = Button(place_map, text="Buy", fg=button2, width=8,
-                         bg=button1, command=lambda:[place_forget(place_map),load_market(BirminghamDF),random_encounter()],  borderwidth=10, font=buttonFont)
+    #Misc.lift(place_map)
+    place_map.place(height=600,width=800)
+
+
+    Birmingham_Button = Button(place_map, text="Birmingham", fg=button2, width=8,
+                         bg=button1, command=lambda:[place_forget(place_map),pack_list(),load_market(BirminghamDF),random_encounter()],  borderwidth=10, font=buttonFont)
     Birmingham_Button.pack()
 
-    Bristol_Button = Button(place_map, text="Remove", fg=button2, width=8,
-                          bg=button1, command=lambda:[place_forget(place_map),load_market(BristolDF),random_encounter()], borderwidth=10, font=buttonFont)
+    Bristol_Button = Button(place_map, text="Bristol", fg=button2, width=8,
+                          bg=button1, command=lambda:[place_forget(place_map),pack_list(),load_market(BristolDF),random_encounter()], borderwidth=10, font=buttonFont)
     Bristol_Button.pack()
 
-    London_Button = Button(place_map, text="Sell", fg=button2, width=8,
-                          bg=button1, command=lambda:[place_forget(place_map),load_market(LondonDF),random_encounter()], borderwidth=10, font=buttonFont)
+    London_Button = Button(place_map, text="London", fg=button2, width=8,
+                          bg=button1, command=lambda:[place_forget(place_map),pack_list(),load_market(LondonDF),random_encounter()], borderwidth=10, font=buttonFont)
     London_Button.pack()
 
-    Nottingham_button = Button(place_map, text="Sell", fg=button2, width=8,
-                           bg=button1, command=lambda:[place_forget(place_map),load_market(NottinghamDF),random_encounter()], borderwidth=10, font=buttonFont)
+    Nottingham_button = Button(place_map, text="Nottingham", fg=button2, width=8,
+                           bg=button1, command=lambda:[place_forget(place_map),pack_list(),load_market(NottinghamDF),random_encounter()], borderwidth=10, font=buttonFont)
     Nottingham_button.pack()
+
+    Leave_Button = Button(place_map, text="Leave Shop", fg=button2, width=8,
+                          bg=button1, command=lambda: [place_forget(place_map),pack_list()],
+                          borderwidth=10, font=buttonFont)
+    Leave_Button.pack()
 
 
 def place_forget(place_map):
 
-    place_map.pack_forget()
+    place_map.place_forget()
 
 
 def Options():
@@ -280,13 +290,147 @@ def HighScore():
 def end_game():
     if Days == 30:
         print("HighScore and congrats")
+    elif Days == 7 and p1["Debt"] > 0:
+        print("HighScore and congrats")
 
 def Quit():
     root.destroy()
 
+def pack_list():
+    List_Of_Grids_pack = [DisplayFrame.grid(row = 1 ,column = 1, columnspan = 3, rowspan = 1,padx = 5, pady = 5),
+                          ButtonFrame.grid(row = 2 ,column = 2, columnspan = 1),
+                          RHS_Frame.grid(row = 2 ,column = 3, columnspan = 1, rowspan = 1),
+                          InventoryFrame.grid(row = 1 ,column = 1, columnspan = 1, rowspan = 1),
+                          DataScreenFrame.grid(row = 3 ,column = 1, columnspan = 1, rowspan = 1),
+                          LHS_Frame.grid(row = 2 ,column = 1, columnspan = 1, rowspan = 1),
+                          BuyScreenFrame.grid(row = 1 ,column = 1, columnspan = 1, rowspan = 1),
+                          PersonFrame.grid(row = 2 ,column = 1, columnspan = 1, rowspan = 1)]
+    for x in List_Of_Grids_pack:
+        return x
+
+
+def unpack_list(): #why does the unpack list interact ith the root????
+    List_Of_Grids_Unpack = [DisplayFrame.grid_forget(), ButtonFrame.grid_forget(), RHS_Frame.grid_forget(),
+                            InventoryFrame.grid_forget(), DataScreenFrame.grid_forget(),
+                            LHS_Frame.grid_forget(), BuyScreenFrame.grid_forget(), PersonFrame.grid_forget()]
+    for x in List_Of_Grids_Unpack:
+        return x
+
+def Bank_Borrow():
+    if Days > 7:
+      print("The Bank cannot lend any more money")
+    else:
+        if p1["Debt"] == 20000:
+            print("You have no more collateral")
+        else:
+            p1["Debt"] += 2000
+            p1["balance"] += 1000
+
+
+def Bank_RemoveBorrow():
+    if Days > 7:
+      print("The Bank cannot lend any more money")
+    else:
+        if p1["Debt"] < 10000:
+            print("Nice try")
+        else:
+            p1["Debt"] -= 2000
+            p1["balance"] -= 1000
+
+def Bank_pay_back():
+
+    if p1["Debt"] == 0 or p1["Debt"] < 0:
+        print("Your all paid up")
+
+    else:
+        p1["Debt"] -= 1000
+
+        p1["balance"] -= 1000
+
+
+def Bank():
+
+    myButtonBorrow = Button(ButtonFrame, text="Borrow", fg=button2, width=8,
+                         bg=button1, command=Bank_Borrow, borderwidth=10, font=buttonFont)
+    myButtonBorrow.grid(row=1, column=1, columnspan=1, rowspan=1, padx=2, pady=2)
+
+    myButtonPay = Button(ButtonFrame, text="Payback", fg=button2, width=8,
+                          bg=button1, command=Bank_pay_back, borderwidth=10, font=buttonFont)
+    myButtonPay.grid(row=1, column=2, columnspan=1, rowspan=1, padx=2, pady=2)
+
+    myButtonRemoveBorrow = Button(ButtonFrame, text="RemoveBorrow", fg=button2, width=8,
+                          bg=button1, command=Bank_RemoveBorrow, borderwidth=10, font=buttonFont)
+    myButtonRemoveBorrow.grid(row=1, column=3, columnspan=1, rowspan=1, padx=2, pady=2)
+
+    myButtonBank = Button(ButtonFrame, text="Baaaank", fg=button2, width=8,
+                          bg=button1, command=UnBank, borderwidth=10, font=buttonFont)
+    myButtonBank.grid(row=8, column=2, columnspan=1, rowspan=1, padx=2, pady=2)
+
+def UnBank():
+    myButtonBuy = Button(ButtonFrame, text="Buy", fg=button2, width=8,
+                         bg=button1, command=Buy, borderwidth=10, font=buttonFont)
+    myButtonBuy.grid(row=1, column=1, columnspan=1, rowspan=1, padx=2, pady=2)
+
+    myButtonDrop = Button(ButtonFrame, text="Remove", fg=button2, width=8,
+                          bg=button1, command=Remove, borderwidth=10, font=buttonFont)
+    myButtonDrop.grid(row=1, column=2, columnspan=1, rowspan=1, padx=2, pady=2)
+
+    myButtonSell = Button(ButtonFrame, text="Sell", fg=button2, width=8,
+                          bg=button1, command=Sell, borderwidth=10, font=buttonFont)
+    myButtonSell.grid(row=1, column=3, columnspan=1, rowspan=1, padx=2, pady=2)
+
+    myButtonBank = Button(ButtonFrame, text="Baaaank", fg=button2, width=8,
+                          bg=button1, command=Bank, borderwidth=10, font=buttonFont)
+    myButtonBank.grid(row=8, column=2, columnspan=1, rowspan=1, padx=2, pady=2)
 
 
 
+
+def combat():
+
+    myButtonAttack = Button(ButtonFrame, text="Borrow", fg=button2, width=8,
+                         bg=button1, command=Bank_Borrow, borderwidth=10, font=buttonFont)
+    myButtonAttack.grid(row=1, column=1, columnspan=1, rowspan=1, padx=2, pady=2)
+
+    myButtonRun = Button(ButtonFrame, text="Payback", fg=button2, width=8,
+                          bg=button1, command=lambda:[UnCombat()], borderwidth=10, font=buttonFont)
+    myButtonRun.grid(row=1, column=2, columnspan=1, rowspan=1, padx=2, pady=2)
+
+    myButtonBribe = Button(ButtonFrame, text="RemoveBorrow", fg=button2, width=8,
+                          bg=button1, command=Bank_RemoveBorrow, borderwidth=10, font=buttonFont)
+    myButtonBribe.grid(row=1, column=3, columnspan=1, rowspan=1, padx=2, pady=2)
+
+    # this allows you to select the grid
+    selected = market_tv.focus()
+
+    temp = market_tv.item(selected, 'values')
+    temp2 = inv_tv.item(selected, 'values')
+    # if money is more or equal to cost
+    if p1["balance"] >= int(temp[1]) and int(temp[2]) > 0:
+        Transfer = int(temp[2]) - 1
+        p1["balance"] -= int(temp[1])
+        market_tv.item(selected, values=(temp[0], temp[1], Transfer))
+        inv_tv.item(selected, values=(temp2[0], int(temp2[1]) + 1))
+    else:
+        'note to self add message to action screen'
+
+
+def UnCombat():
+    myButtonBuy = Button(ButtonFrame, text="Buy", fg=button2, width=8,
+                         bg=button1, command=Buy, borderwidth=10, font=buttonFont)
+    myButtonBuy.grid(row=1, column=1, columnspan=1, rowspan=1, padx=2, pady=2)
+
+    myButtonDrop = Button(ButtonFrame, text="Remove", fg=button2, width=8,
+                          bg=button1, command=Remove, borderwidth=10, font=buttonFont)
+    myButtonDrop.grid(row=1, column=2, columnspan=1, rowspan=1, padx=2, pady=2)
+
+    myButtonSell = Button(ButtonFrame, text="Sell", fg=button2, width=8,
+                          bg=button1, command=Sell, borderwidth=10, font=buttonFont)
+    myButtonSell.grid(row=1, column=3, columnspan=1, rowspan=1, padx=2, pady=2)
+
+    myButtonBank = Button(ButtonFrame, text="Baaaank", fg=button2, width=8,
+                          bg=button1, command=Bank, borderwidth=10, font=buttonFont)
+    myButtonBank.grid(row=8, column=2, columnspan=1, rowspan=1, padx=2, pady=2)
 #Constants hahaa
 
 #inside button, if you have state = DISABLED it stops the button from being clicked
@@ -343,8 +487,12 @@ PersonFrame.grid(row = 2 ,column = 1, columnspan = 1, rowspan = 1)
 Person = Canvas(PersonFrame, width = 180, height = 140,  highlightthickness=4)
 Person.pack()
 
-Health_and_Balance = Label(Person,text = "Health" + str(p1["health"]),font =buttonFont,fg="black")
-Health_and_Balance.pack()####################Why does this not work????
+Health = Label(Person,text = "Health" + str(p1["health"]),font =buttonFont,fg="black")
+Health.pack()
+Balance = Label(Person,text = "Balance" + str(p1["balance"]),font =buttonFont,fg="black")
+Balance.pack()
+Debt = Label(Person,text = "Debt" + str(p1["Debt"]),font =buttonFont,fg="black")
+Debt.pack()
 
 
 # Buy_Sell_Button_Frame
@@ -362,6 +510,9 @@ myButtonSell = Button(ButtonFrame, text = "Sell", fg = button2, width= 8,
                       bg = button1, command = Sell,borderwidth=10, font = buttonFont)
 myButtonSell.grid(row = 1 ,column = 3, columnspan = 1, rowspan = 1,padx = 2, pady = 2)
 
+myButtonBank = Button(ButtonFrame, text = "Baaaank", fg = button2,width= 8,
+                      bg = button1, command = Bank,borderwidth=10, font = buttonFont)
+myButtonBank.grid(row = 8 ,column = 2, columnspan = 1, rowspan = 1,padx = 2, pady = 2)
 
 
 # Move Frame
@@ -409,6 +560,10 @@ myButtonShop = Button(ButtonFrame, text = "shop", fg = button2,width= 8,
                       bg = button1, command = shop,borderwidth=10, font = buttonFont)
 myButtonShop.grid(row = 7 ,column = 2, columnspan = 1, rowspan = 1,padx = 2, pady = 2)
 
+myButtonBank = Button(ButtonFrame, text = "Baaaank", fg = button2,width= 8,
+                      bg = button1, command = Bank,borderwidth=10, font = buttonFont)
+myButtonBank.grid(row = 8 ,column = 2, columnspan = 1, rowspan = 1,padx = 2, pady = 2)
+
 #Loading_Screen.pack
 
 
@@ -423,6 +578,9 @@ myButtonShop.grid(row = 7 ,column = 2, columnspan = 1, rowspan = 1,padx = 2, pad
 # tv.configure(xscrollcommand=treescrollx.set,yscrollcommand=treescrolly.set)
 # treescrollx.pack(side=bottom,fill="x")
 # treescrolly.pack(side=bottom,fill="y")
+
+
+
 
 
 
