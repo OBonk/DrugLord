@@ -46,7 +46,7 @@ root.configure(background='#D6EAF8')
 Days = 0
 
 playerStruct = namedtuple("playerStruct","location inventory balance health")
-p1 = {"balance":1000,"health":100,"fists":2,"Debt":10000,"Katana":0, "Gun":0,"Ammo":0 }
+p1 = {"balance":1000,"health":100,"fists":2,"Debt":10000, "Katana":0, "Gun":0,"Ammo":0 }
 cop = {"balance":10,"health":5,"Gun":1,"Ammo":10,"Baton":1 }
 
 #how to change players values
@@ -167,7 +167,6 @@ def Buy():
     if p1["balance"] >= int(temp[1]) and int(temp[2]) > 0:
         Transfer = int(temp[2]) - 1
         p1["balance"] -= int(temp[1])
-        Balancetext.set(p1["balance"])
         market_tv.item(selected, values=(temp[0], temp[1], Transfer))
         inv_tv.item(selected, values=(temp2[0], int(temp2[1]) + 1))
     else:
@@ -187,7 +186,7 @@ def Sell():#######Not working
         Transfer = int(temp2[1]) - 1
         # this puts money into the balance
         p1["balance"] += int(temp[1])
-        Balancetext.set(p1["balance"])
+
         # now we edit the values in the actual treeviews on the screen
         market_tv.item(selected, values=(temp[0], temp[1],int(temp[2])+1 ))
         inv_tv.item(selected, values=(temp2[0], Transfer))
@@ -488,14 +487,9 @@ PersonFrame.grid(row = 2 ,column = 1, columnspan = 1, rowspan = 1)
 Person = Canvas(PersonFrame, width = 180, height = 140,  highlightthickness=4)
 Person.pack()
 
-Healthtext = StringVar()
-Healthtext.set(p1["health"])
-Balancetext = StringVar()
-Balancetext.set(p1["balance"])
-
-Health = Label(Person,textvariable=Healthtext,font =buttonFont,fg="black")
+Health = Label(Person,text = "Health" + str(p1["health"]),font =buttonFont,fg="black")
 Health.pack()
-Balance = Label(Person,textvariable=Balancetext,font =buttonFont,fg="black")
+Balance = Label(Person,text = "Balance" + str(p1["balance"]),font =buttonFont,fg="black")
 Balance.pack()
 Debt = Label(Person,text = "Debt" + str(p1["Debt"]),font =buttonFont,fg="black")
 Debt.pack()
