@@ -185,7 +185,7 @@ def Sell():#######Not working
     if int(temp2[1])> 0:
         #this removes the drug
         Transfer = int(temp2[1]) - 1
-        #this puts money into the balance
+        # this puts money into the balance
         p1["balance"] += int(temp[1])
         Balancetext.set(p1["balance"])
         # now we edit the values in the actual treeviews on the screen
