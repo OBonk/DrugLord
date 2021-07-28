@@ -384,23 +384,78 @@ def UnBank():
                           bg=button1, command=Bank, borderwidth=10, font=buttonFont)
     myButtonBank.grid(row=8, column=2, columnspan=1, rowspan=1, padx=2, pady=2)
 
+def random_encounter():
+    # I do not understand weights and why do I need numbers
+    numberList = ["nothing_happens","dectected", "freak_happiness"]
+    R_E = random.choices(numberList, weights=[100, 10000, 10],k=1) #chance_of_dectection
+    if R_E == "nothing_happens":
+        'nothing happens'
+    elif R_E == "detected":
+        combat_buttons()
+        load_combat_menu()
+        combat_while()
+
+    elif R_E == "freak_happiness":
+        p1["balance"] += 500
+
+def combat_while(mybuttonAttack):
+    #chance_of_dectection
+    while cop["health"] > 0 or cop2["health"] > 0:
+
+        if "weapon selected" and mybuttonAttack and cop["health"] >= "weapon selected":
+            print("You use weapon selected for x damage\n cop fires hitting you for 2 health")
+            cop["health"] -= "weapon selected"
+            p1["health"] -= 2
+
+        elif "weapon selected" and mybuttonAttack and cop["health"] <= "weapon selected":
+            print("You use weapon selected for x damage and kill the cop\n"
+                  "you gain 20 bucks")
+            p1["balance"] += 20
+            "Load the last df clicked"
+
+        elif "weapon selected" and mybuttonAttack and cop2["health"] >= "weapon selected":
+            print("You use weapon selected for x damage\n cop fires hitting you for 2 health")
+            cop2["health"] -= "weapon selected"
+            p1["health"] -= 2
+
+        elif "weapon selected" and mybuttonAttack and cop2["health"] <= "weapon selected":
+            print("You use weapon selected for x damage and kill the cop\n"
+                    "you gain 20 bucks")
+            p1["balance"] += 40
+            "Load the last df clicked"
+
+        elif  mybuttonAttack and cop["attack"] >= p1["health"]:
+            Quit()
 
 
 
-def combat():
+    # if the selected weapon is chosen in combat menu and fight button is selected.
+    # do damage to cop based on wapon selected.
+    #cop then does damage based on his wepon if he has enough health
+    #if cop has no health
+def run():
+    "Go to the last df pressed"
 
-    myButtonAttack = Button(ButtonFrame, text="Borrow", fg=button2, width=8,
-                         bg=button1, command=Bank_Borrow, borderwidth=10, font=buttonFont)
-    myButtonAttack.grid(row=1, column=1, columnspan=1, rowspan=1, padx=2, pady=2)
 
-    myButtonRun = Button(ButtonFrame, text="Payback", fg=button2, width=8,
-                          bg=button1, command=lambda:[UnCombat()], borderwidth=10, font=buttonFont)
-    myButtonRun.grid(row=1, column=2, columnspan=1, rowspan=1, padx=2, pady=2)
 
-    myButtonBribe = Button(ButtonFrame, text="RemoveBorrow", fg=button2, width=8,
-                          bg=button1, command=Bank_RemoveBorrow, borderwidth=10, font=buttonFont)
-    myButtonBribe.grid(row=1, column=3, columnspan=1, rowspan=1, padx=2, pady=2)
+def bribe_menu(myButtonBribe):
+    if cop and p1["balance"] >= 1000 and myButtonBribe:
+        p1["balance"] -= 1000
+        print("The cop goes away with $1000")
+    elif cop2 and p1["balance"] >= 2000 and myButtonBribe:
+        p1["balance"] -= 1000
+        print("The cop goes away with $1000")
+    elif cop and p1["balance"] <= 1000 and myButtonBribe:
+        p1["health"] -= 2
+        print("Police:No chance scum(police fires a shot at you\n You lose 2 health")
+    elif cop2 and p1["balance"] <= 2000 and myButtonBribe:
+        p1["health"] -= 4
+        print("Police:No chance scum(police fires a shot at you\n You lose 4 health")
 
+
+
+
+def load_combat_menu():
     # this allows you to select the grid
     selected = market_tv.focus()
 
@@ -416,7 +471,23 @@ def combat():
         'note to self add message to action screen'
 
 
-def UnCombat():
+def combat_buttons():
+
+    myButtonAttack = Button(ButtonFrame, text="Borrow", fg=button2, width=8,
+                         bg=button1, command=Bank_Borrow, borderwidth=10, font=buttonFont)
+    myButtonAttack.grid(row=1, column=1, columnspan=1, rowspan=1, padx=2, pady=2)
+
+    myButtonRun = Button(ButtonFrame, text="Payback", fg=button2, width=8,
+                          bg=button1, command=lambda:[UnCombat_buttons()], borderwidth=10, font=buttonFont)
+    myButtonRun.grid(row=1, column=2, columnspan=1, rowspan=1 , padx=2, pady=2)
+
+    myButtonBribe = Button(ButtonFrame, text="RemoveBorrow", fg=button2, width=8,
+                          bg=button1, command=Bank_RemoveBorrow, borderwidth=10, font=buttonFont)
+    myButtonBribe.grid(row=1, column=3, columnspan=1, rowspan=1, padx=2, pady=2)
+
+
+
+def UnCombat_buttons():
     myButtonBuy = Button(ButtonFrame, text="Buy", fg=button2, width=8,
                          bg=button1, command=Buy, borderwidth=10, font=buttonFont)
     myButtonBuy.grid(row=1, column=1, columnspan=1, rowspan=1, padx=2, pady=2)
