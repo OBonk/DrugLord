@@ -49,6 +49,8 @@ playerStruct = namedtuple("playerStruct","location inventory balance health")
 p1 = {"balance":1000,"health":100,"fists":2,"Debt":10000,"Katana":0, "Gun":0,"Ammo":0 }
 cop = {"balance":10,"health":5,"Gun":1,"Ammo":10,"Baton":1 }
 
+enemieslist = [] # to contain enemies
+currentEnemies = []
 #how to change players values
 #p1.location = "London"
 
@@ -115,22 +117,6 @@ text1 = "#85C1E9"
 
 #creating a label widget
 
-
-
-def random_encounter():
-    # I do not understand weights and why do I need numbers
-
-
-    numberList = ["nothing_happens","dectected", "freak_happiness"]
-    R_E = random.choices(numberList, weights=[100, chance_of_dectection, 10],k=1)
-    if R_E == "nothing_happens":
-        'nothing happens'
-    elif R_E == "detected":
-        combat()
-    elif R_E == "freak_happiness":
-        p1["balance"] += 500
-
-
 def shop(): #Canvas does not work
     Katana = p1["balance"]-500
     Gun = p1["balance"]-1000
@@ -165,10 +151,9 @@ def Buy():
     temp2 = inv_tv.item(selected, 'values')
     # if money is more or equal to cost
     if p1["balance"] >= int(temp[1]) and int(temp[2]) > 0:
-        Transfer = int(temp[2]) - 1
         p1["balance"] -= int(temp[1])
         Balancetext.set(p1["balance"])
-        market_tv.item(selected, values=(temp[0], temp[1], Transfer))
+        market_tv.item(selected, values=(temp[0], temp[1], int(temp[2]) - 1))
         inv_tv.item(selected, values=(temp2[0], int(temp2[1]) + 1))
     else:
         'note to self add message to action screen'
@@ -177,20 +162,20 @@ def Remove():
 
 def Sell():#######Not working
     ################ Havent figured this out
+    #blue selected area is .focus()
     selected = inv_tv.focus()
 
-    temp = market_tv.item(selected, 'values')
+    temp = market_tv.item(selected, 'values') # (values gets all values from row) gets the selected rows
     temp2 = inv_tv.item(selected, 'values')
     #if the selected from is greater than
     if int(temp2[1])> 0:
         #this removes the drug
-        Transfer = int(temp2[1]) - 1
         # this puts money into the balance
         p1["balance"] += int(temp[1])
-        Balancetext.set(p1["balance"])
+        Balancetext.set(p1["balance"]) #changes balance on stat screen
         # now we edit the values in the actual treeviews on the screen
         market_tv.item(selected, values=(temp[0], temp[1],int(temp[2])+1 ))
-        inv_tv.item(selected, values=(temp2[0], Transfer))
+        inv_tv.item(selected, values=(temp2[0], int(temp2[1]) - 1))
     else:
         'note to self add message to action screen'
 
@@ -319,10 +304,10 @@ def unpack_list(): #why does the unpack list interact ith the root????
 
 def Bank_Borrow():
     if Days > 7:
-      print("The Bank cannot lend any more money")
+      InfoText.set("The Bank cannot lend any more money")
     else:
         if p1["Debt"] == 20000:
-            print("You have no more collateral")
+            InfoText.set("You have no more collateral")
         else:
             p1["Debt"] += 2000
             p1["balance"] += 1000
@@ -330,10 +315,10 @@ def Bank_Borrow():
 
 def Bank_RemoveBorrow():
     if Days > 7:
-      print("The Bank cannot lend any more money")
+      InfoText.set("The Bank cannot lend any more money")
     else:
         if p1["Debt"] < 10000:
-            print("Nice try")
+            InfoText.set("Nice try")
         else:
             p1["Debt"] -= 2000
             p1["balance"] -= 1000
@@ -341,7 +326,7 @@ def Bank_RemoveBorrow():
 def Bank_pay_back():
 
     if p1["Debt"] == 0 or p1["Debt"] < 0:
-        print("Your all paid up")
+        InfoText.set("Your all paid up")
 
     else:
         p1["Debt"] -= 1000
@@ -400,7 +385,8 @@ def random_encounter():
 
 def combat_while(mybuttonAttack):
     #chance_of_dectection
-    while cop["health"] > 0 or cop2["health"] > 0:
+    #turn this into function to be called by buttons' function to check whether combat is still ongoing
+    #while cop["health"] > 0 or cop2["health"] > 0:
 
         if "weapon selected" and mybuttonAttack and cop["health"] >= "weapon selected":
             print("You use weapon selected for x damage\n cop fires hitting you for 2 health")
@@ -520,7 +506,10 @@ DisplayFrame = LabelFrame(root, text = "Action Screen",width = 750, height = 125
 DisplayFrame.grid(row = 1 ,column = 1, columnspan = 3, rowspan = 1,padx = 5, pady = 5)
 DisplayScreen = Canvas(DisplayFrame, width = 750, height = 125, bg = "white", highlightthickness=4)
 DisplayScreen.pack()
-
+InfoText = StringVar()
+InfoText.set("Hello")
+InfoLabel = Label(DisplayScreen,textvariable=InfoText,font=buttonFont,anchor="center")
+InfoLabel.place(x=350,y=50)
 # Holds All the Buttons
 
 ButtonFrame = LabelFrame(root, text = "Buttons",highlightthickness=4, highlightbackground =hlbg
