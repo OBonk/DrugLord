@@ -48,7 +48,7 @@ Days = 0
 playerStruct = namedtuple("playerStruct","location inventory balance health")
 p1 = {"balance":1000,"health":100,"fists":2,"Debt":10000,"Katana":0, "Gun":0,"Ammo":0 }
 cop = {"balance":10,"health":5,"Gun":1,"Ammo":10,"Baton":1 }
-
+cop2 = {"balance":20,"health":10,"Attack":4 }
 enemieslist = [] # to contain enemies
 currentEnemies = []
 #how to change players values
@@ -86,7 +86,7 @@ Bristol_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Price":Br
 London_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Price":London_price,"Quantity":London_quantity}
 Nottingham_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Price":Nottingham_price,"Quantity":Nottingham_quantity}
 Inventory_dict = {"Drug":["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"],"Quantity":[0,0,0,0,0]}
-
+Weapons_dict =  {"Weapon":["fists","Katana", "Gun","Ammo" ],"Damage":[2,8,10,0],"Quantity":[1,0,0,0]}
 
 BirminghamDF = pd.DataFrame(data=Birmingham_dict, index =["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"])
 BristolDF = pd.DataFrame(data=Bristol_dict, index =["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"])
@@ -117,12 +117,13 @@ text1 = "#85C1E9"
 
 #creating a label widget
 
-def shop(): #Canvas does not work
+def shop(): #I do not understand balance.text
     Katana = p1["balance"]-500
-    Gun = p1["balance"]-1000
+    Balancetext.set(p1["balance"])
+    Gun = p1["balance"]-1000,
+    Balancetext.set(p1["balance"])
     ammo = p1["balance"]-10
-    #Solutions: Create new tk window for shop
-    #2: Create a function to hide all widgets on screen
+    Balancetext.set(p1["balance"])
     unpack_list()
     place_map = Canvas(root, width=800, height=600, bg="white")
     # Misc.lift(place_map)
@@ -180,6 +181,21 @@ def Sell():#######Not working
         'note to self add message to action screen'
 
 
+def Attack():
+    selected = market_tv.focus()
+
+    temp = market_tv.item(selected, 'values')
+    temp2 = inv_tv.item(selected, 'values')
+    # if money is more or equal to cost
+    if p1["balance"] >= int(temp[1]) and int(temp[2]) > 0:
+        p1["balance"] -= int(temp[1])
+        Balancetext.set(p1["balance"])
+        market_tv.item(selected, values=(temp[0], temp[1], int(temp[2]) - 1))
+        inv_tv.item(selected, values=(temp2[0], int(temp2[1]) + 1))
+    else:
+        'note to self add message to action screen'
+
+
 def loading_inventory():
     tv = Treeview(InventoryScreen)
     tv.place(relheight=1, relwidth=1)
@@ -194,6 +210,27 @@ def loading_inventory():
         tv.insert("", "end", values=row)
     tv.pack()
     return tv
+
+def load_combat_menu():
+    # this allows you to select the grid
+    switch_disable()
+    combat_buttons()
+    tv = Treeview(BuyScreen)
+    tv.place(relheight=1, relwidth=1)
+    selected = weapon_tv.focus()
+    df = pd.DataFrame(data=Weapons_dict)
+    tv['columns'] = list(df.columns)
+
+    temp = market_tv.item(selected, 'values')
+    temp2 = inv_tv.item(selected, 'values')
+    # if money is more or equal to cost
+    if p1["balance"] >= int(temp[1]) and int(temp[2]) > 0:
+        Transfer = int(temp[2]) - 1
+        p1["balance"] -= int(temp[1])
+        market_tv.item(selected, values=(temp[0], temp[1], Transfer))
+        inv_tv.item(selected, values=(temp2[0], int(temp2[1]) + 1))
+    else:
+        'note to self add message to action screen'
 
 def load_market(df,preloaded=True):
     if preloaded:
@@ -278,6 +315,8 @@ def end_game():
         print("HighScore and congrats")
     elif Days == 7 and p1["Debt"] > 0:
         print("HighScore and congrats")
+    elif p1["health"] <= 0:
+        print("youlose")
 
 def Quit():
     root.destroy()
@@ -335,6 +374,7 @@ def Bank_pay_back():
 
 
 def Bank():
+    switch_disable()
 
     myButtonBorrow = Button(ButtonFrame, text="Borrow", fg=button2, width=8,
                          bg=button1, command=Bank_Borrow, borderwidth=10, font=buttonFont)
@@ -352,7 +392,20 @@ def Bank():
                           bg=button1, command=UnBank, borderwidth=10, font=buttonFont)
     myButtonBank.grid(row=8, column=2, columnspan=1, rowspan=1, padx=2, pady=2)
 
+def switch_disable():
+    myButtonSail["state"] = "disabled"
+    myButtonStayHere["state"] = "disabled"
+    myButtonPlaces["state"] = "disabled"
+    myButtonShop["state"] = "disabled"
+
+def switch_Enable():
+    myButtonSail["state"] = "normal"
+    myButtonStayHere["state"] = "normal"
+    myButtonPlaces["state"] = "normal"
+    myButtonShop["state"] = "normal"
+
 def UnBank():
+    switch_Enable()
     myButtonBuy = Button(ButtonFrame, text="Buy", fg=button2, width=8,
                          bg=button1, command=Buy, borderwidth=10, font=buttonFont)
     myButtonBuy.grid(row=1, column=1, columnspan=1, rowspan=1, padx=2, pady=2)
@@ -378,47 +431,11 @@ def random_encounter():
     elif R_E == "detected":
         combat_buttons()
         load_combat_menu()
-        combat_while()
+        Attack()
 
     elif R_E == "freak_happiness":
         p1["balance"] += 500
 
-def combat_while(mybuttonAttack):
-    #chance_of_dectection
-    #turn this into function to be called by buttons' function to check whether combat is still ongoing
-    #while cop["health"] > 0 or cop2["health"] > 0:
-
-        if "weapon selected" and mybuttonAttack and cop["health"] >= "weapon selected":
-            print("You use weapon selected for x damage\n cop fires hitting you for 2 health")
-            cop["health"] -= "weapon selected"
-            p1["health"] -= 2
-
-        elif "weapon selected" and mybuttonAttack and cop["health"] <= "weapon selected":
-            print("You use weapon selected for x damage and kill the cop\n"
-                  "you gain 20 bucks")
-            p1["balance"] += 20
-            "Load the last df clicked"
-
-        elif "weapon selected" and mybuttonAttack and cop2["health"] >= "weapon selected":
-            print("You use weapon selected for x damage\n cop fires hitting you for 2 health")
-            cop2["health"] -= "weapon selected"
-            p1["health"] -= 2
-
-        elif "weapon selected" and mybuttonAttack and cop2["health"] <= "weapon selected":
-            print("You use weapon selected for x damage and kill the cop\n"
-                    "you gain 20 bucks")
-            p1["balance"] += 40
-            "Load the last df clicked"
-
-        elif  mybuttonAttack and cop["attack"] >= p1["health"]:
-            Quit()
-
-
-
-    # if the selected weapon is chosen in combat menu and fight button is selected.
-    # do damage to cop based on wapon selected.
-    #cop then does damage based on his wepon if he has enough health
-    #if cop has no health
 def run():
     "Go to the last df pressed"
 
@@ -440,31 +457,15 @@ def bribe_menu(myButtonBribe):
 
 
 
-
-def load_combat_menu():
-    # this allows you to select the grid
-    selected = market_tv.focus()
-
-    temp = market_tv.item(selected, 'values')
-    temp2 = inv_tv.item(selected, 'values')
-    # if money is more or equal to cost
-    if p1["balance"] >= int(temp[1]) and int(temp[2]) > 0:
-        Transfer = int(temp[2]) - 1
-        p1["balance"] -= int(temp[1])
-        market_tv.item(selected, values=(temp[0], temp[1], Transfer))
-        inv_tv.item(selected, values=(temp2[0], int(temp2[1]) + 1))
-    else:
-        'note to self add message to action screen'
-
-
 def combat_buttons():
 
+
     myButtonAttack = Button(ButtonFrame, text="Borrow", fg=button2, width=8,
-                         bg=button1, command=Bank_Borrow, borderwidth=10, font=buttonFont)
+                         bg=button1, command=Attack, borderwidth=10, font=buttonFont)
     myButtonAttack.grid(row=1, column=1, columnspan=1, rowspan=1, padx=2, pady=2)
 
     myButtonRun = Button(ButtonFrame, text="Payback", fg=button2, width=8,
-                          bg=button1, command=lambda:[UnCombat_buttons()], borderwidth=10, font=buttonFont)
+                          bg=button1, command=lambda:[UnCombat_buttons(),run], borderwidth=10, font=buttonFont)
     myButtonRun.grid(row=1, column=2, columnspan=1, rowspan=1 , padx=2, pady=2)
 
     myButtonBribe = Button(ButtonFrame, text="RemoveBorrow", fg=button2, width=8,
@@ -552,12 +553,14 @@ Healthtext = StringVar()
 Healthtext.set(p1["health"])
 Balancetext = StringVar()
 Balancetext.set(p1["balance"])
+Debttext = StringVar()
+Debttext.set(p1["Debt"])
 
 Health = Label(Person,textvariable=Healthtext,font =buttonFont,fg="black")
 Health.pack()
 Balance = Label(Person,textvariable=Balancetext,font =buttonFont,fg="black")
 Balance.pack()
-Debt = Label(Person,text = "Debt" + str(p1["Debt"]),font =buttonFont,fg="black")
+Debt = Label(Person,textvariable=Debttext,font =buttonFont,fg="black")
 Debt.pack()
 
 
@@ -650,7 +653,7 @@ myButtonBank.grid(row = 8 ,column = 2, columnspan = 1, rowspan = 1,padx = 2, pad
 
 
 
-
+weapon_tv = load_combat_menu()
 
 inv_tv = loading_inventory()
 
