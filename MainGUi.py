@@ -93,7 +93,6 @@ BristolDF = pd.DataFrame(data=Bristol_dict, index =["Cocaine", "Crack", "LSD", "
 LondonDF = pd.DataFrame(data=London_dict, index =["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"])
 NottinghamDF = pd.DataFrame(data=Nottingham_dict, index =["Cocaine", "Crack", "LSD", "Ecstasy", "Weed"])
 
-
 #creating random encounter
 #Extracted quantities list from inventory Dict and then used in sum
 quantities = Inventory_dict["Quantity"]
@@ -182,18 +181,7 @@ def Sell():#######Not working
 
 
 def Attack():
-    selected = market_tv.focus()
-
-    temp = market_tv.item(selected, 'values')
-    temp2 = inv_tv.item(selected, 'values')
-    # if money is more or equal to cost
-    if p1["balance"] >= int(temp[1]) and int(temp[2]) > 0:
-        p1["balance"] -= int(temp[1])
-        Balancetext.set(p1["balance"])
-        market_tv.item(selected, values=(temp[0], temp[1], int(temp[2]) - 1))
-        inv_tv.item(selected, values=(temp2[0], int(temp2[1]) + 1))
-    else:
-        'note to self add message to action screen'
+    InfoText.set("Attack")
 
 
 def loading_inventory():
@@ -212,25 +200,22 @@ def loading_inventory():
     return tv
 
 def load_combat_menu():
-    # this allows you to select the grid
+    # this allows you to select the grid#
     switch_disable()
     combat_buttons()
     tv = Treeview(BuyScreen)
     tv.place(relheight=1, relwidth=1)
-    selected = weapon_tv.focus()
     df = pd.DataFrame(data=Weapons_dict)
-    tv['columns'] = list(df.columns)
+    tv['columns'] = tv['columns'] = list(df.columns)
+    tv['show'] = "headings"
+    for column in tv['columns']:
+        tv.heading(column, text=column)
+        tv.column(column, minwidth=0, width=65)
+    df_rows = df.to_numpy().tolist()
+    for row in df_rows:
+        tv.insert("", "end", values=row)
+    return tv
 
-    temp = market_tv.item(selected, 'values')
-    temp2 = inv_tv.item(selected, 'values')
-    # if money is more or equal to cost
-    if p1["balance"] >= int(temp[1]) and int(temp[2]) > 0:
-        Transfer = int(temp[2]) - 1
-        p1["balance"] -= int(temp[1])
-        market_tv.item(selected, values=(temp[0], temp[1], Transfer))
-        inv_tv.item(selected, values=(temp2[0], int(temp2[1]) + 1))
-    else:
-        'note to self add message to action screen'
 
 def load_market(df,preloaded=True):
     if preloaded:
@@ -259,6 +244,8 @@ def load_market(df,preloaded=True):
 
 
 def Sail():
+    weapon_tv.pack()
+    market_tv.pack_forget()
     pass
 
 
@@ -271,25 +258,25 @@ def StayHere(load_market,Days):
 
 def Places():### how do I
     unpack_list()
-    place_map = Canvas(root, width = 800, height = 600, bg = "white")
+
     #Misc.lift(place_map)
     place_map.place(height=600,width=800)
 
 
     Birmingham_Button = Button(place_map, text="Birmingham", fg=button2, width=8,
-                         bg=button1, command=lambda:[place_forget(place_map),pack_list(),load_market(BirminghamDF),random_encounter()],  borderwidth=10, font=buttonFont)
+                         bg=button1, command=random_encounter,  borderwidth=10, font=buttonFont)
     Birmingham_Button.pack()
 
     Bristol_Button = Button(place_map, text="Bristol", fg=button2, width=8,
-                          bg=button1, command=lambda:[place_forget(place_map),pack_list(),load_market(BristolDF),random_encounter()], borderwidth=10, font=buttonFont)
+                          bg=button1, command=random_encounter, borderwidth=10, font=buttonFont)
     Bristol_Button.pack()
 
     London_Button = Button(place_map, text="London", fg=button2, width=8,
-                          bg=button1, command=lambda:[place_forget(place_map),pack_list(),load_market(LondonDF),random_encounter()], borderwidth=10, font=buttonFont)
+                          bg=button1, command=random_encounter, borderwidth=10, font=buttonFont)
     London_Button.pack()
 
     Nottingham_button = Button(place_map, text="Nottingham", fg=button2, width=8,
-                           bg=button1, command=lambda:[place_forget(place_map),pack_list(),load_market(NottinghamDF),random_encounter()], borderwidth=10, font=buttonFont)
+                           bg=button1, command=random_encounter, borderwidth=10, font=buttonFont)
     Nottingham_button.pack()
 
     Leave_Button = Button(place_map, text="Leave Shop", fg=button2, width=8,
@@ -298,7 +285,7 @@ def Places():### how do I
     Leave_Button.pack()
 
 
-def place_forget(place_map):
+def place_forget():
 
     place_map.place_forget()
 
@@ -424,16 +411,21 @@ def UnBank():
 
 def random_encounter():
     # I do not understand weights and why do I need numbers
-    numberList = ["nothing_happens","dectected", "freak_happiness"]
-    R_E = random.choices(numberList, weights=[100, 10000, 10],k=1) #chance_of_dectection
-    if R_E == "nothing_happens":
-        'nothing happens'
-    elif R_E == "detected":
+    place_forget()
+    pack_list()
+    print("what")
+    numberList = ["nothing_happens","detected", "freak_happiness"]
+    R_E = random.choices(numberList, weights=[1, 10000, 1],k=1) #chance_of_dectection
+    print(R_E[0])
+    if R_E[0] == "nothing_happens":
+        InfoText.set('nothing happens')
+    elif R_E[0] == "detected":
+        InfoText.set("detected")
         combat_buttons()
-        load_combat_menu()
+        weapon_tv = load_combat_menu()
         Attack()
-
-    elif R_E == "freak_happiness":
+    elif R_E[0] == "freak_happiness":
+        InfoText.set("free monies")
         p1["balance"] += 500
 
 def run():
@@ -456,20 +448,19 @@ def bribe_menu(myButtonBribe):
         print("Police:No chance scum(police fires a shot at you\n You lose 4 health")
 
 
-
 def combat_buttons():
 
 
-    myButtonAttack = Button(ButtonFrame, text="Borrow", fg=button2, width=8,
+    myButtonAttack = Button(ButtonFrame, text="Attack", fg=button2, width=8,
                          bg=button1, command=Attack, borderwidth=10, font=buttonFont)
     myButtonAttack.grid(row=1, column=1, columnspan=1, rowspan=1, padx=2, pady=2)
 
-    myButtonRun = Button(ButtonFrame, text="Payback", fg=button2, width=8,
+    myButtonRun = Button(ButtonFrame, text="Run", fg=button2, width=8,
                           bg=button1, command=lambda:[UnCombat_buttons(),run], borderwidth=10, font=buttonFont)
     myButtonRun.grid(row=1, column=2, columnspan=1, rowspan=1 , padx=2, pady=2)
 
-    myButtonBribe = Button(ButtonFrame, text="RemoveBorrow", fg=button2, width=8,
-                          bg=button1, command=Bank_RemoveBorrow, borderwidth=10, font=buttonFont)
+    myButtonBribe = Button(ButtonFrame, text="Bribe", fg=button2, width=8,
+                          bg=button1, command=bribe_menu, borderwidth=10, font=buttonFont)
     myButtonBribe.grid(row=1, column=3, columnspan=1, rowspan=1, padx=2, pady=2)
 
 
@@ -653,7 +644,8 @@ myButtonBank.grid(row = 8 ,column = 2, columnspan = 1, rowspan = 1,padx = 2, pad
 
 
 
-weapon_tv = load_combat_menu()
+weapon_tv = None
+place_map = Canvas(root, width = 800, height = 600, bg = "white")
 
 inv_tv = loading_inventory()
 
